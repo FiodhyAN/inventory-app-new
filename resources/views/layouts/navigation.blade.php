@@ -63,16 +63,17 @@
                 <div data-i18n="Analytics">Dashboard</div>
             </a>
         </li>
-
-        <li class="menu-header small text-uppercase">
-            <span class="menu-header-text">Superadmin</span>
-        </li>
-        <li class="menu-item {{ request()->routeIs('superadmin.users.index') ? 'active' : '' }}">
-            <a href="{{ route('superadmin.users.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-dock-top"></i>
-                <div data-i18n="Account Settings">User Management</div>
-            </a>
-        </li>
+        @if (auth()->user()->is_superadmin)
+            <li class="menu-header small text-uppercase">
+                <span class="menu-header-text">Superadmin</span>
+            </li>
+            <li class="menu-item {{ request()->routeIs('superadmin.users.index') ? 'active' : '' }}">
+                <a href="{{ route('superadmin.users.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-dock-top"></i>
+                    <div data-i18n="Account Settings">Assign Admin</div>
+                </a>
+            </li>
+        @endif
         <ul class="menu-sub">
             <li class="menu-item">
                 <a href="pages-misc-error.html" class="menu-link">
