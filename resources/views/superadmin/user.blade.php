@@ -65,6 +65,23 @@
             }
         </style>
     @endsection
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Edit User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="card">
         <h5 class="card-header">User Management</h5>
         <div class="table-responsive text-nowrap">
@@ -75,6 +92,7 @@
                         <th>Username</th>
                         <th>Name</th>
                         <th>Is Admin</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody class="table-border-bottom-0">
@@ -93,6 +111,21 @@
                                         value="{{ $user->user_id }}">
                                     <span class="slider round"></span>
                                 </label>
+                            </td>
+                            <td>
+                                <div class="dropdown">
+                                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow"
+                                        data-bs-toggle="dropdown">
+                                        <i class="bx bx-dots-vertical-rounded"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <button type="button" class="dropdown-item" value="{{ $user->user_id }}"
+                                            data-bs-toggle="modal" data-bs-target="#editModal"><i
+                                                class="bx bx-edit-alt me-1"></i> Edit</button>
+                                        <a class="dropdown-item" href="javascript:void(0);"><i
+                                                class="bx bx-trash me-1"></i> Delete</a>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     @endforeach

@@ -69,8 +69,31 @@
             </li>
             <li class="menu-item {{ request()->routeIs('superadmin.users.index') ? 'active' : '' }}">
                 <a href="{{ route('superadmin.users.index') }}" class="menu-link">
-                    <i class="menu-icon tf-icons bx bx-dock-top"></i>
-                    <div data-i18n="Account Settings">Assign Admin</div>
+                    <i class="menu-icon tf-icons bx bx-user"></i>
+                    <div data-i18n="Account Settings">Master User</div>
+                </a>
+            </li>
+        @endif
+        @if (auth()->user()->is_admin)
+            <li class="menu-header small text-uppercase">
+                <span class="menu-header-text">Master</span>
+            </li>
+            <li class="menu-item">
+                <a href="#" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-package"></i>
+                    <div data-i18n="Account Settings">Master Barang</div>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="#" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-building"></i>
+                    <div data-i18n="Account Settings">Master Departemen</div>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="#" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-category"></i>
+                    <div data-i18n="Account Settings">Master Category</div>
                 </a>
             </li>
         @endif
