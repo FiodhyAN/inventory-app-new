@@ -70,7 +70,13 @@
             <li class="menu-item {{ request()->routeIs('superadmin.users.index') ? 'active' : '' }}">
                 <a href="{{ route('superadmin.users.index') }}" class="menu-link">
                     <i class="menu-icon tf-icons bx bx-user"></i>
-                    <div data-i18n="Account Settings">Master User</div>
+                    <div data-i18n="Account Settings">User Management</div>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="#" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-building"></i>
+                    <div data-i18n="Account Settings">Department</div>
                 </a>
             </li>
         @endif
@@ -82,12 +88,6 @@
                 <a href="#" class="menu-link">
                     <i class="menu-icon tf-icons bx bx-package"></i>
                     <div data-i18n="Account Settings">Master Barang</div>
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="#" class="menu-link">
-                    <i class="menu-icon tf-icons bx bx-building"></i>
-                    <div data-i18n="Account Settings">Master Departemen</div>
                 </a>
             </li>
             <li class="menu-item">

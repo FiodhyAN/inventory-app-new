@@ -9,7 +9,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::all();
+        $users = User::where('user_id', '!=', auth()->id())->get();
         return view('superadmin.user', compact('users'));
     }
 
@@ -24,5 +24,20 @@ class UserController extends Controller
         $user->save();
 
         return response()->json(['message' => 'User updated successfully']);
+    }
+
+    public function edit(Request $request)
+    {
+        $user = User::find($request->user_id);
+        return response()->json($user);
+    }
+
+    public function destroy(Request $request)
+    {
+        $user = User::find($request->user_id);
+        $user->delete();
+        $users = User::all();
+
+        return response()->json(['message' => 'User deleted successfully', 'users' => $users]);
     }
 }
