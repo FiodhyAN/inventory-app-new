@@ -21,6 +21,8 @@ Route::middleware('auth')->group(function () {
 Route::group(['middleware' => ['auth', 'isSuperadmin'], 'prefix' => 'superadmin'], function () {
     Route::group(['prefix' => 'users'], function () {
         Route::get('/', [UserController::class, 'index'])->name('superadmin.users.index');
+        Route::post('/store', [UserController::class, 'store'])->name('superadmin.user.store');
+        Route::put('/update', [UserController::class, 'update'])->name('superadmin.user.update');
         Route::post('/update-admin', [UserController::class, 'updateAdmin'])->name('superadmin.user.update-admin');
         Route::get('/edit', [UserController::class, 'edit'])->name('superadmin.user.edit');
         Route::delete('/delete', [UserController::class, 'destroy'])->name('superadmin.user.delete');
