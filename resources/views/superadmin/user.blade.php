@@ -63,8 +63,102 @@
             .slider.round:before {
                 border-radius: 50%;
             }
+
+            .input-group {
+                position: relative;
+                display: flex;
+                align-items: stretch;
+                width: 100%;
+            }
+
+            .input-group .form-control {
+                position: relative;
+                flex: 1 1 auto;
+                width: 1%;
+                min-width: 0;
+            }
+
+            .input-group-text {
+                display: flex;
+                align-items: center;
+                padding: 0.375rem 0.75rem;
+                font-size: 1rem;
+                font-weight: 400;
+                line-height: 1.5;
+                color: #212529;
+                text-align: center;
+                white-space: nowrap;
+                background-color: #e9ecef;
+                border: 1px solid #ced4da;
+                border-radius: 0.25rem;
+            }
         </style>
     @endsection
+    <div class="modal fade" id="addDepartment" tabindex="-1" aria-labelledby="addDepartmentLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addDepartmentLabel">Add Department</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addDepartmenForm">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="department_name" class="form-label">Department Name</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="department_name" name="department_name"
+                                    required>
+                                <button type="submit" class="btn btn-primary input-group-text"><i
+                                        class="bx bx-plus-circle"></i></button>
+                            </div>
+                    </form> <!-- Add this closing tag -->
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Department</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-border-bottom-0">
+                            @foreach ($departments as $department)
+                                <tr>
+                                    <td><i class="fab fa-angular fa-lg text-danger me-3"></i>
+                                        <strong>{{ $loop->iteration }}</strong>
+                                    </td>
+                                    <td>
+                                        <input type="text" value="{{ $department->nama_departemen }}">
+                                    </td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow"
+                                                data-bs-toggle="dropdown">
+                                                <i class="bx bx-dots-vertical-rounded"></i>
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                <button type="button" class="dropdown-item edit_dept_btn"
+                                                    value="{{ $department->departemen_id }}" data-bs-toggle="modal"
+                                                    data-bs-target="#editModal"><i class="bx bx-edit-alt me-1"></i>
+                                                    Edit</button>
+                                                <button class="dropdown-item deleteDeptBtn"
+                                                    value="{{ $department->departemen_id }}"><i
+                                                        class="bx bx-trash me-1"></i> Delete</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+
     <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -103,6 +197,7 @@
             </div>
         </div>
     </div>
+
     <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -140,12 +235,19 @@
             </div>
         </div>
     </div>
+
     <div class="card">
         <h5 class="card-header d-flex justify-content-between align-items-center">
             User Management
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
-                <i class="bx bx-user-plus me-1"></i> Add User
-            </button>
+            <div>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#addDepartment">
+                    <i class="bx bx-plus-circle me-1"></i> Add Department
+                </button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
+                    <i class="bx bx-user-plus me-1"></i> Add User
+                </button>
+            </div>
         </h5>
         <div class="table-responsive text-nowrap">
             <table class="table datatable">
@@ -170,7 +272,14 @@
                                 {{ $user->nama }}
                             </td>
                             <td>
-                                {{ $user->departemen ? $user->departemen->nama_departemen : '' }}
+                                <select class="form-control">
+                                    <option value="" selected disabled>Select Department</option>
+                                    @foreach ($departments as $department)
+                                        <option value="{{ $department->id }}"
+                                            {{ $user->departement_id == $department->departemen_id ? 'selected' : '' }}>
+                                            {{ $department->nama_departemen }}</option>
+                                    @endforeach
+                                </select>
                             </td>
                             <td>
                                 <label class="switch">

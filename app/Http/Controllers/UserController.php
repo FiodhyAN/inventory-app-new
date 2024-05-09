@@ -15,6 +15,7 @@ class UserController extends Controller
         $users = User::with('departemen')
             ->where('user_id', '!=', auth()->id())->get();
         $departments = Departemen::all();
+        $departments = Departemen::all();
         return view('superadmin.user', compact('users', 'departments'));
     }
 

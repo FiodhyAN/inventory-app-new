@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DepartemenController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +27,10 @@ Route::group(['middleware' => ['auth', 'isSuperadmin'], 'prefix' => 'superadmin'
         Route::post('/update-admin', [UserController::class, 'updateAdmin'])->name('superadmin.user.update-admin');
         Route::get('/edit', [UserController::class, 'edit'])->name('superadmin.user.edit');
         Route::delete('/delete', [UserController::class, 'destroy'])->name('superadmin.user.delete');
+    });
+
+    Route::group(['prefix' => 'department'], function () {
+        Route::post('/store', [DepartemenController::class, 'store'])->name('superadmin.department.store');
     });
 });
 
