@@ -112,6 +112,7 @@
                                 <button type="submit" class="btn btn-primary input-group-text"><i
                                         class="bx bx-plus-circle"></i></button>
                             </div>
+                        </div>
                     </form> <!-- Add this closing tag -->
 
                     <table class="table">
@@ -155,8 +156,6 @@
                 </div>
             </div>
         </div>
-    </div>
-    </div>
     </div>
 
     <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
