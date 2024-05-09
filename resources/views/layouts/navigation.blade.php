@@ -91,7 +91,7 @@
                 </a>
             </li>
             <li class="menu-item">
-                <a href="#" class="menu-link">
+                <a href="{{ route('admin.categories.index') }}" class="menu-link">
                     <i class="menu-icon tf-icons bx bx-category"></i>
                     <div data-i18n="Account Settings">Master Category</div>
                 </a>
