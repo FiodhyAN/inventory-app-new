@@ -318,10 +318,11 @@
                 searching: false,
                 info: false,
                 lengthChange: false,
+                pageLength: 10,
                 sort: false,
             });
 
-            $('.edit_btn').on('click', function() {
+            $(document).on('click', '.edit_btn', function() {
                 var button = $(this).val();
                 var id_edit = button;
                 console.log(id_edit);
@@ -411,6 +412,7 @@
 
                     },
                     error: function(response) {
+                        Swal.close();
                         Swal.fire(
                             'Error!',
                             'Failed to update user.',
@@ -626,28 +628,42 @@
 
                     },
                     error: function(response) {
-                        if (response.status == 422) {
+                        Swal.close();
+                        Swal.fire(
+                            'Error!',
+                            'Failed to add user.',
+                            'error'
+                        ).then((result) => {
                             $('#addModal').modal('show');
-                            let errors = response.responseJSON.errors;
-                            if (errors.username) {
-                                $('.username-error').html('');
-                                errors.username.forEach(error => {
-                                    $('.username-error').append(`<li>${error}</li>`);
-                                });
+                            $('#username').val(response.responseJSON.username);
+                            $('#name').val(response.responseJSON.name);
+                            $('.username-error').html('');
+                            $('.name-error').html('');
+                            $('.password-error').html('');
+
+                            if (response.status == 422) {
+                                $('#addModal').modal('show');
+                                let errors = response.responseJSON.errors;
+                                if (errors.username) {
+                                    $('.username-error').html('');
+                                    errors.username.forEach(error => {
+                                        $('.username-error').append(`<li>${error}</li>`);
+                                    });
+                                }
+                                if (errors.name) {
+                                    $('.name-error').html('');
+                                    errors.name.forEach(error => {
+                                        $('.name-error').append(`<li>${error}</li>`);
+                                    });
+                                }
+                                if (errors.password) {
+                                    $('.password-error').html('');
+                                    errors.password.forEach(error => {
+                                        $('.password-error').append(`<li>${error}</li>`);
+                                    });
+                                }
                             }
-                            if (errors.name) {
-                                $('.name-error').html('');
-                                errors.name.forEach(error => {
-                                    $('.name-error').append(`<li>${error}</li>`);
-                                });
-                            }
-                            if (errors.password) {
-                                $('.password-error').html('');
-                                errors.password.forEach(error => {
-                                    $('.password-error').append(`<li>${error}</li>`);
-                                });
-                            }
-                        }
+                        });
                     }
                 })
             })

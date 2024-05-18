@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\DepartemenController;
+use App\Http\Controllers\KategoriBarangController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\BarangController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -32,6 +34,25 @@ Route::group(['middleware' => ['auth', 'isSuperadmin'], 'prefix' => 'superadmin'
 
     Route::group(['prefix' => 'department'], function () {
         Route::post('/store', [DepartemenController::class, 'store'])->name('superadmin.department.store');
+    });
+});
+
+Route::group(['middleware' => ['auth', 'isAdmin'], 'prefix' => 'admin-menu'], function () {
+    Route::group(['prefix' => 'categories'], function () {
+        Route::get('/', [KategoriBarangController::class, 'index'])->name('admin.categories.index');
+        Route::get('/edit', [KategoriBarangController::class, 'edit'])->name('admin.categories.edit');
+        Route::post('/store', [KategoriBarangController::class, 'store'])->name('admin.categories.store');
+        Route::put('/update', [KategoriBarangController::class, 'update'])->name('admin.categories.update');
+        Route::delete('/delete', [KategoriBarangController::class, 'destroy'])->name('admin.categories.delete');
+    });
+
+    Route::group(['prefix' => 'barangs'], function () {
+        Route::get('/', [BarangController::class, 'index'])->name('admin.barangs.index');
+        Route::get('/create', [BarangController::class, 'create'])->name('admin.barangs.create');
+        Route::post('/store', [BarangController::class, 'store'])->name('admin.barangs.store');
+        Route::get('/edit', [BarangController::class, 'edit'])->name('admin.barangs.edit');
+        Route::put('/update', [BarangController::class, 'update'])->name('admin.barangs.update');
+        Route::delete('/delete', [BarangController::class, 'destroy'])->name('admin.barangs.delete');
     });
 });
 
