@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Departemen;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules;
 
@@ -88,5 +89,41 @@ class UserController extends Controller
         $users = User::where('user_id', '!=', auth()->id())->get();
 
         return response()->json(['message' => 'User deleted successfully', 'users' => $users]);
+    }
+
+    public function updateDepartment(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $validation = Validator::make($request->all(), [
+                'user_id' => 'required|exists:users,user_id',
+                'departemen_id' => 'required|exists:departemens,departemen_id'
+            ], [
+                'user_id.required' => 'User ID harus diisi',
+                'user_id.exists' => 'User ID tidak ditemukan',
+                'departemen_id.required' => 'Departemen ID harus diisi',
+                'departemen_id.exists' => 'Departemen ID tidak ditemukan'
+            ]);
+
+            if ($validation->fails()) {
+                throw new \Exception($validation->errors());
+            }
+
+            $user = User::find($request->user_id);
+            $user->departemen_id = $request->departemen_id;
+            $user->save();
+
+            DB::commit();
+            $message = 'Berhasil Update Data Departemen';
+            $data = true;
+            $errors = [];
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $errors[] = $e->getMessage();
+            $data = false;
+            $message = 'Gagal Update Data Departemen';
+        }
+
+        return response()->json(['message' => $message, 'data' => $data, 'errors' => $errors]);
     }
 }

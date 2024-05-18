@@ -115,7 +115,7 @@
                         </div>
                     </form> <!-- Add this closing tag -->
 
-                    <table class="table" id="table-department">
+                    <table class="table w-100" id="table-department">
                         <thead>
                             <tr>
                                 <th>No</th>
@@ -130,7 +130,8 @@
                                         <strong>{{ $loop->iteration }}</strong>
                                     </td>
                                     <td>
-                                        <input type="text" value="{{ $department->nama_departemen }}">
+                                        <input type="text" value="{{ $department->nama_departemen }}"
+                                            class="nama_departemen">
                                     </td>
                                     <td>
                                         <div class="dropdown">
@@ -140,15 +141,17 @@
                                             </button>
                                             <div class="dropdown-menu">
                                                 <button type="button" class="dropdown-item edit_dept_btn"
-                                                    value="{{ $department->departemen_id }}" data-bs-toggle="modal"
-                                                    data-bs-target="#editModal"><i class="bx bx-edit-alt me-1"></i>
+                                                    value="{{ $department->departemen_id }}"><i
+                                                        class="bx bx-edit-alt me-1"></i>
                                                     Edit</button>
                                                 <button class="dropdown-item deleteDeptBtn"
                                                     value="{{ $department->departemen_id }}"><i
                                                         class="bx bx-trash me-1"></i> Delete</a>
+                                                </button>
                                             </div>
                                         </div>
                                     </td>
+                                    </form>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -271,11 +274,12 @@
                                 {{ $user->nama }}
                             </td>
                             <td>
-                                <select class="form-control select-department">
+                                <select class="form-control select-department" data-user_id="{{ $user->user_id }}"
+                                    data-selected_department="{{ $user->departemen_id }}">
                                     <option value="" selected disabled>Select Department</option>
                                     @foreach ($departments as $department)
-                                        <option value="{{ $department->id }}"
-                                            {{ $user->departement_id == $department->departemen_id ? 'selected' : '' }}>
+                                        <option value="{{ $department->departemen_id }}"
+                                            {{ $user->departemen_id == $department->departemen_id ? 'selected' : '' }}>
                                             {{ $department->nama_departemen }}</option>
                                     @endforeach
                                 </select>
@@ -452,6 +456,27 @@
                     }
                 });
             });
+
+            table.on('change', '.select-department', function() {
+                let departemen_id = $(this).val();
+                let user_id = $(this).data('user_id');
+
+                $.ajax({
+                    url: "{{ route('superadmin.user.updateDepartemen') }}",
+                    type: 'PUT',
+                    data: {
+                        departemen_id: departemen_id,
+                        user_id: user_id,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        console.log(response)
+                    },
+                    error: function(response) {
+                        console.log(response)
+                    }
+                });
+            })
 
             table.on('change', '.switch_btn', function() {
                 var id = $(this).val();
@@ -692,7 +717,8 @@
                             'Department has been added.',
                             'success'
                         ).then((result) => {
-                            let departments = response.data;
+                            let departments = response.data.departemen;
+                            let users = response.data.users;
                             let html = '';
                             departments.forEach((department, index) => {
                                 html += `<tr>
@@ -700,7 +726,7 @@
                                         <strong>${index + 1}</strong>
                                     </td>
                                     <td>
-                                        <input type="text" value="${department.nama_departemen}">
+                                        <input type="text" value="${department.nama_departemen}" data-departemen_id="${department.departemen_id}">
                                     </td>
                                     <td>
                                         <div class="dropdown">
@@ -725,12 +751,19 @@
                             $('#addDepartmentForm').trigger('reset');
                             $('#addDepartment').modal('show');
                             $('.select-department').html('');
-                            $('.select-department').append(
-                                `<option value="" selected disabled>Select Department</option>`);
-                            departments.forEach((department) => {
-                                $('.select-department').append(
-                                    `<option value="${department.departemen_id}">${department.nama_departemen}</option>`
+                            $('.select-department').each(function() {
+                                let selectedDepartmentId = $(this).data(
+                                    'selected_department');
+                                $(this).html(
+                                    '<option value="" selected disabled>Select Department</option>'
                                 );
+                                departments.forEach((department) => {
+                                    let selected = department.departemen_id ==
+                                        selectedDepartmentId ? 'selected' : '';
+                                    $(this).append(
+                                        `<option value="${department.departemen_id}" ${selected}>${department.nama_departemen}</option>`
+                                    );
+                                });
                             });
                         });
                     },
@@ -741,6 +774,210 @@
                             'error'
                         ).then((result) => {
                             $('#addDepartment').modal('show');
+                        });
+                    }
+                });
+            })
+
+            const departemen_table = $('#table-department').DataTable({
+                paging: true,
+                responsive: true,
+                searching: false,
+                info: false,
+                lengthChange: false,
+                pageLength: 10,
+                sort: false,
+            });
+
+            departemen_table.on('click', '.edit_dept_btn', function() {
+                var departemen_id = $(this).val();
+                var row = $(this).closest('tr');
+                var nama_departemen = row.find('.nama_departemen').val();
+                console.log(departemen_id);
+                console.log(nama_departemen);
+
+                $('#addDepartment').modal('hide');
+                Swal.fire({
+                    title: 'Loading',
+                    text: 'Updating department...',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    allowEnterKey: false,
+                    didOpen: () => {
+                        Swal.showLoading()
+                    },
+                });
+                $.ajax({
+                    url: "{{ route('superadmin.department.update') }}",
+                    type: 'PUT',
+                    data: {
+                        departemen_id: departemen_id,
+                        nama_departemen: nama_departemen,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        Swal.close();
+                        Swal.fire(
+                            'Success!',
+                            'Department has been updated.',
+                            'success'
+                        ).then((result) => {
+                            let departments = response.data.departemen;
+                            let html = '';
+                            departments.forEach((department, index) => {
+                                html += `<tr>
+                                    <td><i class="fab fa-angular fa-lg text-danger me-3"></i>
+                                        <strong>${index + 1}</strong>
+                                    </td>
+                                    <td>
+                                        <input type="text" value="${department.nama_departemen}" data-departemen_id="${department.departemen_id}">
+                                    </td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow"
+                                                data-bs-toggle="dropdown">
+                                                <i class="bx bx-dots-vertical-rounded"></i>
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                <button type="button" class="dropdown-item edit_dept_btn"
+                                                    value="${department.departemen_id}"><i class="bx bx-edit-alt me-1"></i>
+                                                    Edit</button>
+                                                <button class="dropdown-item deleteDeptBtn"
+                                                    value="${department.departemen_id}"><i
+                                                        class="bx bx-trash me-1"></i> Delete</a>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>`;
+                            });
+                            $('#table-department tbody').html(html);
+                            $('#addDepartment').modal('show');
+                            $('.select-department').html('');
+                            $('.select-department').each(function() {
+                                let selectedDepartmentId = $(this).data(
+                                    'selected_department');
+                                $(this).html(
+                                    '<option value="" selected disabled>Select Department</option>'
+                                );
+                                departments.forEach((department) => {
+                                    let selected = department.departemen_id ==
+                                        selectedDepartmentId ? 'selected' : '';
+                                    $(this).append(
+                                        `<option value="${department.departemen_id}" ${selected}>${department.nama_departemen}</option>`
+                                    );
+                                });
+                            });
+                        });
+                    },
+                    error: function(response) {
+                        Swal.fire(
+                            'Error!',
+                            response.responseJSON.message,
+                            'error'
+                        ).then((result) => {
+                            $('#addDepartment').modal('show');
+                        });
+                    }
+                });
+            });
+
+            departemen_table.on('click', '.deleteDeptBtn', function() {
+                var departemen_id = $(this).val();
+                $('#addDepartment').modal('hide');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    Swal.fire({
+                        title: 'Loading',
+                        text: 'Deleting department...',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        allowEnterKey: false,
+                        didOpen: () => {
+                            Swal.showLoading()
+                        },
+                    })
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "{{ route('superadmin.department.delete') }}",
+                            type: 'DELETE',
+                            data: {
+                                departemen_id: departemen_id,
+                                _token: '{{ csrf_token() }}'
+                            },
+                            success: function(response) {
+                                Swal.fire(
+                                    'Deleted!',
+                                    'Department has been deleted.',
+                                    'success'
+                                ).then((result) => {
+                                    let departments = response.data.departemen;
+                                    let html = '';
+                                    departments.forEach((department, index) => {
+                                        html += `<tr>
+                                            <td><i class="fab fa-angular fa-lg text-danger me-3"></i>
+                                                <strong>${index + 1}</strong>
+                                            </td>
+                                            <td>
+                                                <input type="text" value="${department.nama_departemen}" data-departemen_id="${department.departemen_id}">
+                                            </td>
+                                            <td>
+                                                <div class="dropdown">
+                                                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow"
+                                                        data-bs-toggle="dropdown">
+                                                        <i class="bx bx-dots-vertical-rounded"></i>
+                                                    </button>
+                                                    <div class="dropdown-menu">
+                                                        <button type="button" class="dropdown-item edit_dept_btn"
+                                                            value="${department.departemen_id}"><i class="bx bx-edit-alt me-1"></i>
+                                                            Edit</button>
+                                                        <button class="dropdown-item deleteDeptBtn"
+                                                            value="${department.departemen_id}"><i
+                                                                class="bx bx-trash me-1"></i> Delete</a>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                </td>
+                                            </tr>`;
+                                    });
+                                    $('#table-department tbody').html(html);
+                                    $('#addDepartment').modal('show');
+                                    $('.select-department').html('');
+                                    $('.select-department').each(function() {
+                                        let selectedDepartmentId = $(this).data(
+                                            'selected_department');
+                                        $(this).html(
+                                            '<option value="" selected disabled>Select Department</option>'
+                                        );
+                                        departments.forEach((department) => {
+                                            let selected = department
+                                                .departemen_id ==
+                                                selectedDepartmentId ?
+                                                'selected' : '';
+                                            $(this).append(
+                                                `<option value="${department.departemen_id}" ${selected}>${department.nama_departemen}</option>`
+                                            );
+                                        });
+                                    });
+                                });
+                            },
+                            error: function(response) {
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text: response.responseJSON.message,
+                                    icon: 'error'
+                                }).then((result) => {
+                                    $('#addDepartment').modal('show');
+                                });
+                            }
                         });
                     }
                 });

@@ -29,11 +29,13 @@ Route::group(['middleware' => ['auth', 'isSuperadmin'], 'prefix' => 'superadmin'
         Route::post('/update-admin', [UserController::class, 'updateAdmin'])->name('superadmin.user.update-admin');
         Route::get('/edit', [UserController::class, 'edit'])->name('superadmin.user.edit');
         Route::delete('/delete', [UserController::class, 'destroy'])->name('superadmin.user.delete');
-        Route::put('/update-department', [UserController::class, 'updateDepartment'])->name('superadmin.user.updateDepartement');
+        Route::put('/update-department', [UserController::class, 'updateDepartment'])->name('superadmin.user.updateDepartemen');
     });
 
     Route::group(['prefix' => 'department'], function () {
         Route::post('/store', [DepartemenController::class, 'store'])->name('superadmin.department.store');
+        Route::put('/update', [DepartemenController::class, 'update'])->name('superadmin.department.update');
+        Route::delete('/delete', [DepartemenController::class, 'destroy'])->name('superadmin.department.delete');
     });
 });
 
