@@ -102,7 +102,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="addDepartmenForm">
+                    <form id="addDepartmentForm">
                         @csrf
                         <div class="mb-3">
                             <label for="department_name" class="form-label">Department Name</label>
@@ -115,7 +115,7 @@
                         </div>
                     </form> <!-- Add this closing tag -->
 
-                    <table class="table">
+                    <table class="table" id="table-department">
                         <thead>
                             <tr>
                                 <th>No</th>
@@ -271,7 +271,7 @@
                                 {{ $user->nama }}
                             </td>
                             <td>
-                                <select class="form-control">
+                                <select class="form-control select-department">
                                     <option value="" selected disabled>Select Department</option>
                                     @foreach ($departments as $department)
                                         <option value="{{ $department->id }}"
@@ -650,6 +650,84 @@
                         }
                     }
                 })
+            })
+
+            $('#addDepartmentForm').on('submit', function(e) {
+                e.preventDefault();
+                $('#addDepartment').modal('hide');
+                Swal.fire({
+                    title: 'Loading',
+                    text: 'Adding department...',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    allowEnterKey: false,
+                    didOpen: () => {
+                        Swal.showLoading()
+                    },
+                });
+                $.ajax({
+                    url: "{{ route('superadmin.department.store') }}",
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        Swal.close();
+                        Swal.fire(
+                            'Success!',
+                            'Department has been added.',
+                            'success'
+                        ).then((result) => {
+                            let departments = response.data;
+                            let html = '';
+                            departments.forEach((department, index) => {
+                                html += `<tr>
+                                    <td><i class="fab fa-angular fa-lg text-danger me-3"></i>
+                                        <strong>${index + 1}</strong>
+                                    </td>
+                                    <td>
+                                        <input type="text" value="${department.nama_departemen}">
+                                    </td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow"
+                                                data-bs-toggle="dropdown">
+                                                <i class="bx bx-dots-vertical-rounded"></i>
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                <button type="button" class="dropdown-item edit_dept_btn"
+                                                    value="${department.departemen_id}" data-bs-toggle="modal"
+                                                    data-bs-target="#editModal"><i class="bx bx-edit-alt me-1"></i>
+                                                    Edit</button>
+                                                <button class="dropdown-item deleteDeptBtn"
+                                                    value="${department.departemen_id}"><i
+                                                        class="bx bx-trash me-1"></i> Delete</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>`;
+                            });
+                            $('#table-department tbody').html(html);
+                            $('#addDepartmentForm').trigger('reset');
+                            $('#addDepartment').modal('show');
+                            $('.select-department').html('');
+                            $('.select-department').append(
+                                `<option value="" selected disabled>Select Department</option>`);
+                            departments.forEach((department) => {
+                                $('.select-department').append(
+                                    `<option value="${department.departemen_id}">${department.nama_departemen}</option>`
+                                );
+                            });
+                        });
+                    },
+                    error: function(response) {
+                        Swal.fire(
+                            'Error!',
+                            response.responseJSON.message,
+                            'error'
+                        ).then((result) => {
+                            $('#addDepartment').modal('show');
+                        });
+                    }
+                });
             })
         </script>
     @endsection

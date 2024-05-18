@@ -10,13 +10,18 @@ class DepartemenController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|unique:departemen,nama_departemen'
+            'department_name' => 'required|unique:departemens,nama_departemen'
+        ], [
+            'department_name.required' => 'Nama departemen harus diisi',
+            'department_name.unique' => 'Nama departemen sudah ada'
         ]);
 
         $departemen = new Departemen();
-        $departemen->name = $request->name;
+        $departemen->nama_departemen = $request->department_name;
         $departemen->save();
 
-        return response()->json(['message' => 'Departemen created successfully']);
+        $data = Departemen::all();
+
+        return response()->json(['message' => 'Departemen created successfully', 'data' => $data]);
     }
 }

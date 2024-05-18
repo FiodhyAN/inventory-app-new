@@ -27,6 +27,7 @@ Route::group(['middleware' => ['auth', 'isSuperadmin'], 'prefix' => 'superadmin'
         Route::post('/update-admin', [UserController::class, 'updateAdmin'])->name('superadmin.user.update-admin');
         Route::get('/edit', [UserController::class, 'edit'])->name('superadmin.user.edit');
         Route::delete('/delete', [UserController::class, 'destroy'])->name('superadmin.user.delete');
+        Route::put('/update-department', [UserController::class, 'updateDepartment'])->name('superadmin.user.updateDepartement');
     });
 
     Route::group(['prefix' => 'department'], function () {
