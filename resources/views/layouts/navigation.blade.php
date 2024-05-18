@@ -73,12 +73,6 @@
                     <div data-i18n="Account Settings">User Management</div>
                 </a>
             </li>
-            <li class="menu-item">
-                <a href="#" class="menu-link">
-                    <i class="menu-icon tf-icons bx bx-building"></i>
-                    <div data-i18n="Account Settings">Department</div>
-                </a>
-            </li>
         @endif
         @if (auth()->user()->is_admin)
             <li class="menu-header small text-uppercase">
