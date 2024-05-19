@@ -47,7 +47,7 @@ class BarangController extends Controller
             $barangs = Barang::all();
             $categories = KategoriBarang::all();
 
-            event(new BarangMasuk($barang));
+            event(new BarangMasuk($barang, 'Gudang'));
 
             $data = [
                 'barangs' => $barangs,

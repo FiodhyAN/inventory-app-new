@@ -23,9 +23,10 @@ class CatatBarangMasuk
     public function handle(BarangMasuk $event): void
     {
         $barang = $event->barang;
+        $lokasi = $event->lokasi;
         PerjalananBarang::create([
             'tanggal' => now(),
-            'lokasi' => 'Gudang',
+            'lokasi' => $lokasi,
             'barang_id' => $barang->barang_id,
         ]);
     }
