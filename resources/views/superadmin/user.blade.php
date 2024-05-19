@@ -371,11 +371,16 @@
                             'User has been updated.',
                             'success'
                         ).then((result) => {
-                            let users = response.users;
+                            let users = response.data.users;
                             let html = '';
                             users.forEach((user, index) => {
-                                let department = user.departemen != null ? user.departemen
-                                    .nama_departemen : '';
+                                let departments = response.data.departments;
+                                let departmentOptions =
+                                    '<option value="" selected disabled>Select Department</option>';
+                                departments.forEach(department => {
+                                    departmentOptions +=
+                                        `<option value="${department.departemen_id}" ${user.departemen_id == department.departemen_id ? 'selected' : ''}>${department.nama_departemen}</option>`;
+                                });
                                 html += `<tr>
                                     <td><i class="fab fa-angular fa-lg text-danger me-3"></i>
                                         <strong>${index + 1}</strong>
@@ -385,7 +390,9 @@
                                         ${user.nama}
                                     </td>
                                     <td>
-                                        ${department}
+                                        <select class="form-control select-department" data-user_id="${user.user_id}" data-selected_department="${user.departemen_id}">
+                                            ${departmentOptions}
+                                        </select>
                                     </td>
                                     <td>
                                         <label class="switch">
@@ -583,7 +590,7 @@
                 });
             });
 
-            $('#addForm').on('submit', function() {
+            $('#addForm').on('submit', function(event) {
                 event.preventDefault();
                 $('#addModal').modal('hide');
                 Swal.fire({
@@ -593,9 +600,10 @@
                     allowEscapeKey: false,
                     allowEnterKey: false,
                     didOpen: () => {
-                        Swal.showLoading()
+                        Swal.showLoading();
                     },
                 });
+
                 $.ajax({
                     url: "{{ route('superadmin.user.store') }}",
                     type: 'POST',
@@ -608,49 +616,49 @@
                             'User has been added.',
                             'success'
                         ).then((result) => {
-                            let users = response.users;
+                            let users = response.data.users;
+                            let departments = response.data.departments;
                             let html = '';
                             users.forEach((user, index) => {
-                                let department = user.departemen != null ? user.departemen
-                                    .nama_departemen : '';
+                                let departmentOptions =
+                                    '<option value="" selected disabled>Select Department</option>';
+                                departments.forEach(department => {
+                                    departmentOptions +=
+                                        `<option value="${department.departemen_id}" ${user.departemen_id == department.departemen_id ? 'selected' : ''}>${department.nama_departemen}</option>`;
+                                });
+
                                 html += `<tr>
-                                    <td><i class="fab fa-angular fa-lg text-danger me-3"></i>
-                                        <strong>${index + 1}</strong>
-                                    </td>
-                                    <td>${user.username}</td>
-                                    <td>
-                                        ${user.nama}
-                                    </td>
-                                    <td>
-                                        ${department}
-                                    </td>
-                                    <td>
-                                        <label class="switch">
-                                            <input type="checkbox" ${user.is_admin ? 'checked' : ''} class="switch_btn"
-                                                value="${user.user_id}">
-                                            <span class="slider round"></span>
-                                        </label>
-                                    </td>
-                                    <td>
-                                        <div class="dropdown">
-                                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow"
-                                                data-bs-toggle="dropdown">
-                                                <i class="bx bx-dots-vertical-rounded"></i>
-                                            </button>
-                                            <div class="dropdown-menu">
-                                                <button type="button" class="dropdown-item" value="${user.user_id}"
-                                                    data-bs-toggle="modal" data-bs-target="#editModal"><i
-                                                        class="bx bx-edit-alt me-1"></i> Edit</button>
-                                                <button class="dropdown-item deleteBtn" value="${user.user_id}"><i
-                                                        class="bx bx-trash me-1"></i> Delete</a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>`;
+                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i>
+                            <strong>${index + 1}</strong>
+                        </td>
+                        <td>${user.username}</td>
+                        <td>${user.nama}</td>
+                        <td>
+                            <select class="form-control select-department" data-user_id="${user.user_id}" data-selected_department="${user.departemen_id}">
+                                ${departmentOptions}
+                            </select>
+                        </td>
+                        <td>
+                            <label class="switch">
+                                <input type="checkbox" ${user.is_admin ? 'checked' : ''} class="switch_btn" value="${user.user_id}">
+                                <span class="slider round"></span>
+                            </label>
+                        </td>
+                        <td>
+                            <div class="dropdown">
+                                <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                    <i class="bx bx-dots-vertical-rounded"></i>
+                                </button>
+                                <div class="dropdown-menu">
+                                    <button type="button" class="dropdown-item edit_btn" value="${user.user_id}" data-bs-toggle="modal" data-bs-target="#editModal"><i class="bx bx-edit-alt me-1"></i> Edit</button>
+                                    <button class="dropdown-item deleteBtn" value="${user.user_id}"><i class="bx bx-trash me-1"></i> Delete</button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>`;
                             });
                             $('.table tbody').html(html);
                         });
-
                     },
                     error: function(response) {
                         Swal.close();
@@ -690,8 +698,9 @@
                             }
                         });
                     }
-                })
-            })
+                });
+            });
+
 
             $('#addDepartmentForm').on('submit', function(e) {
                 e.preventDefault();

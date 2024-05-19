@@ -50,11 +50,10 @@ Route::group(['middleware' => ['auth', 'isAdmin'], 'prefix' => 'admin-menu'], fu
 
     Route::group(['prefix' => 'barangs'], function () {
         Route::get('/', [BarangController::class, 'index'])->name('admin.barangs.index');
-        Route::get('/create', [BarangController::class, 'create'])->name('admin.barangs.create');
         Route::post('/store', [BarangController::class, 'store'])->name('admin.barangs.store');
+        Route::put('/update-kategori', [BarangController::class, 'updateKategori'])->name('admin.barangs.updateKategori');
         Route::get('/edit', [BarangController::class, 'edit'])->name('admin.barangs.edit');
         Route::put('/update', [BarangController::class, 'update'])->name('admin.barangs.update');
-        Route::delete('/delete', [BarangController::class, 'destroy'])->name('admin.barangs.delete');
     });
 });
 

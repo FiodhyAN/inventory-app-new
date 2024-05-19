@@ -35,8 +35,14 @@ class UserController extends Controller
         $user->save();
 
         $users = User::where('user_id', '!=', auth()->id())->get();
+        $departments = Departemen::all();
 
-        return response()->json(['message' => 'User created successfully', 'users' => $users]);
+        $data = [
+            'users' => $users,
+            'departments' => $departments
+        ];
+
+        return response()->json(['message' => 'User created successfully', 'data' => $data]);
     }
 
     public function updateAdmin(Request $request)
@@ -78,8 +84,14 @@ class UserController extends Controller
         $user->save();
 
         $users = User::where('user_id', '!=', auth()->id())->get();
+        $departments = Departemen::all();
 
-        return response()->json(['message' => 'User updated successfully', 'users' => $users]);
+        $data = [
+            'users' => $users,
+            'departments' => $departments
+        ];
+
+        return response()->json(['message' => 'User updated successfully', 'data' => $data]);
     }
 
     public function destroy(Request $request)

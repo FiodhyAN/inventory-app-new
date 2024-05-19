@@ -12,10 +12,11 @@ class PerjalananBarang extends Model
     protected $table = 'perjalanan_barangs';
     protected $primaryKey = 'perjalanan_id';
     protected $guarded = [];
+    public $timestamps = false;
 
-    public function pengajuan()
+    public function barang()
     {
-        return $this->belongsTo(PengajuanBarang::class, 'pengajuan_id', 'pengajuan_id');
+        return $this->belongsTo(Barang::class, 'barang_id', 'barang_id');
     }
 
     public function user()
