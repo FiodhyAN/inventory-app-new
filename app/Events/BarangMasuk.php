@@ -15,13 +15,15 @@ class BarangMasuk
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
     public $barang;
+    public $lokasi;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(Barang $barang)
+    public function __construct(Barang $barang, string $lokasi)
     {
         $this->barang = $barang;
+        $this->lokasi = $lokasi;
     }
 
     /**
