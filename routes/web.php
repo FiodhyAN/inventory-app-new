@@ -5,6 +5,7 @@ use App\Http\Controllers\KategoriBarangController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BarangController;
+use App\Http\Controllers\PengajuanController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -19,6 +20,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/pengajuan', [PengajuanController::class, 'index'])->name('pengajuan');
+    Route::post('/pengajuan', [PengajuanController::class, 'store'])->name('pengajuan.store');
+    
+    Route::put('/pengajuan/return', [PengajuanController::class, 'return'])->name('pengajuan.retur');
+    
+    Route::get('/about', function () {
+        return view('about');
+    })->name('about');
 });
 
 Route::group(['middleware' => ['auth', 'isSuperadmin'], 'prefix' => 'superadmin'], function () {
@@ -54,6 +64,11 @@ Route::group(['middleware' => ['auth', 'isAdmin'], 'prefix' => 'admin-menu'], fu
         Route::put('/update-kategori', [BarangController::class, 'updateKategori'])->name('admin.barangs.updateKategori');
         Route::get('/edit', [BarangController::class, 'edit'])->name('admin.barangs.edit');
         Route::put('/update', [BarangController::class, 'update'])->name('admin.barangs.update');
+    });
+
+    Route::prefix('pengajuan')->group(function () {
+        Route::put('/accept', [PengajuanController::class, 'accept'])->name('admin.pengajuan.accept');
+        Route::put('/reject', [PengajuanController::class, 'reject'])->name('admin.pengajuan.reject');
     });
 });
 

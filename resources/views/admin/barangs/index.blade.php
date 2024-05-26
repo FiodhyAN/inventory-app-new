@@ -175,6 +175,8 @@
                             $('#addForm').trigger('reset');
                             let barangs = response.data.barangs;
                             let html = '';
+                            let span_class = '';
+                            let text = '';
                             barangs.forEach((barang, index) => {
                                 let categories = response.data.categories;
                                 let categoryOptions =
@@ -183,6 +185,8 @@
                                     categoryOptions +=
                                         `<option value="${category.kategori_id}" ${category.kategori_id == barang.kategori_id ? 'selected' : ''}>${category.nama_kategori}</option>`;
                                 });
+                                span_class = barang.is_free ? 'success' : 'warning';
+                                text = barang.is_free ? 'Free' : 'Borrowed';
                                 html += `
                                     <tr>
                                         <td><i class="fab fa-angular fa-lg text-danger me-3"></i>
@@ -199,7 +203,7 @@
                                             </select>
                                         </td>
                                         <td>
-                                            ${barang.is_free ? '<span class="badge text-bg-success">Free</span>' : '<span class="badge text-bg-warning">Borrowed</span>'}
+                                            <span class="badge text-bg-${span_class}">${text}</span>
                                         </td>
                                         <td>
                                             <div class="dropdown">

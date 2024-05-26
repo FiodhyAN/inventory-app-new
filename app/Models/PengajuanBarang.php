@@ -11,7 +11,7 @@ class PengajuanBarang extends Model
 
     protected $table = 'pengajuan_barangs';
     protected $primaryKey = 'pengajuan_id';
-    protected $guarded = [];
+    protected $guarded = ['pengajuan_id'];
 
     public function barang()
     {
@@ -26,5 +26,10 @@ class PengajuanBarang extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'user_id');
+    }
+
+    public function scopeMine($query)
+    {
+        return $query->where('user_id', auth()->user()->user_id);
     }
 }

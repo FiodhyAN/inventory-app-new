@@ -28,4 +28,9 @@ class Barang extends Model
     {
         return $this->hasMany(PerjalananBarang::class, 'barang_id', 'barang_id');
     }
+
+    public function scopeIsFree($query)
+    {
+        return $query->where('is_free', true);
+    }
 }
