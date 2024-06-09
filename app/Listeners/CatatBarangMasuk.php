@@ -27,7 +27,7 @@ class CatatBarangMasuk
         PerjalananBarang::create([
             'tanggal' => now(),
             'lokasi' => $lokasi,
-            'barang_id' => $barang->barang_id,
+            'barang_id' => $barang,
         ]);
     }
 }

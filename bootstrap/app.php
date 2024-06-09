@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\isAdmin;
+use App\Http\Middleware\userHasDept;
 use App\Http\Middleware\isSuperadmin;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -16,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'isSuperadmin' => isSuperadmin::class,
             'isAdmin' => isAdmin::class,
+            'userHasDept' => userHasDept::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

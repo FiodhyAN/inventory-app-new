@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\PengajuanBarang;
 use App\Models\Barang;
+use App\Events\BarangMasuk;
 
 class PengajuanController extends Controller
 {
@@ -42,29 +43,37 @@ class PengajuanController extends Controller
         ]);
     }
 
-    public function accept($id){
-        $pengajuan = PengajuanBarang::find($id);
+    public function accept(Request $request){
+        $pengajuan = PengajuanBarang::find($request->pengajuan_id);
         $pengajuan->update([
             'status_pengajuan' => 'y'
         ]);
+
+        $dept = $pengajuan->user->departemen->nama_departemen;
+        
+        event(new BarangMasuk($pengajuan->barang_id, $dept));
 
         return response()->json([
             'message' => 'Pengajuan berhasil diterima'
         ]);
     }   
     
-    public function reject($id){
-        $pengajuan = PengajuanBarang::find($id);
+    public function reject(Request $request){
+        $pengajuan = PengajuanBarang::find($request->pengajuan_id);
         $pengajuan->update([
             'status_pengajuan' => 'n'
+        ]);
+
+        Barang::find($pengajuan->barang_id)->update([
+            'is_free' => true
         ]);
 
         return response()->json([
             'message' => 'Pengajuan berhasil ditolak'
         ]);
     }
-    public function return($id){
-        $pengajuan = PengajuanBarang::find($id);
+    public function return(Request $request){
+        $pengajuan = PengajuanBarang::find(request()->pengajuan_id);
         $pengajuan->update([
             'status_pengajuan' => 'r'
         ]);
@@ -72,6 +81,8 @@ class PengajuanController extends Controller
         Barang::find($pengajuan->barang_id)->update([
             'is_free' => true
         ]);
+
+        event(new BarangMasuk($pengajuan->barang_id, 'Gudang'));
 
         return response()->json([
             'message' => 'Barang berhasil dikembalikan'

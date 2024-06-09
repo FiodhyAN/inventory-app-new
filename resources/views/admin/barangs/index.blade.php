@@ -111,7 +111,7 @@
                                 @if ($barang->is_free)
                                     <span class="badge bg-success">Free</span>
                                 @else
-                                    <span class="badge bg-warning">Borrowed</span>
+                                    <span class="badge bg-warning">OnProgress/Borrowed</span>
                                 @endif
                             </td>
                             <td>
@@ -126,6 +126,9 @@
                                             data-bs-target="#editModal"><i class="bx bx-edit-alt me-1"></i>
                                             Edit
                                         </button>
+                                        <a href="{{ route('admin.barang.perjalanan', ['barang' => $barang->barang_id]) }}" class="dropdown-item">
+                                            <i class="bx bx-transfer me-1"></i> Perjalanan
+                                        </a>
                                     </div>
                                 </div>
                             </td>
@@ -172,58 +175,7 @@
                             title: 'Success',
                             text: response.message,
                         }).then(function() {
-                            $('#addForm').trigger('reset');
-                            let barangs = response.data.barangs;
-                            let html = '';
-                            let span_class = '';
-                            let text = '';
-                            barangs.forEach((barang, index) => {
-                                let categories = response.data.categories;
-                                let categoryOptions =
-                                    '<option value="" selected disabled>Select Category</option>';
-                                categories.forEach(category => {
-                                    categoryOptions +=
-                                        `<option value="${category.kategori_id}" ${category.kategori_id == barang.kategori_id ? 'selected' : ''}>${category.nama_kategori}</option>`;
-                                });
-                                span_class = barang.is_free ? 'success' : 'warning';
-                                text = barang.is_free ? 'Free' : 'Borrowed';
-                                html += `
-                                    <tr>
-                                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i>
-                                            <strong>${index + 1}</strong>
-                                        </td>
-                                        <td>${barang.barang_id}</td>
-                                        <td>
-                                            ${barang.nama_barang}
-                                        </td>
-                                        <td>
-                                            <select class="form-control select-kategori" data-barang_id="${barang.barang_id}"
-                                                data-selected_department="${barang.kategori_id}">
-                                                ${categoryOptions}
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <span class="badge text-bg-${span_class}">${text}</span>
-                                        </td>
-                                        <td>
-                                            <div class="dropdown">
-                                                <button type="button" class="btn p-0 dropdown-toggle hide-arrow"
-                                                    data-bs-toggle="dropdown">
-                                                    <i class="bx bx-dots-vertical-rounded"></i>
-                                                </button>
-                                                <div class="dropdown-menu">
-                                                    <button type="button" class="dropdown-item edit_btn"
-                                                        value="${barang.barang_id}" data-bs-toggle="modal"
-                                                        data-bs-target="#editModal"><i class="bx bx-edit-alt me-1"></i>
-                                                        Edit
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                `;
-                            });
-                            $('.table tbody').html(html);
+                            window.location.reload();
                         });
                     },
                     error: function(xhr) {
@@ -321,54 +273,7 @@
                             title: 'Success',
                             text: response.message,
                         }).then(function() {
-                            $('#editForm').trigger('reset');
-                            let barangs = response.data.barangs;
-                            let html = '';
-                            barangs.forEach((barang, index) => {
-                                let categories = response.data.categories;
-                                let categoryOptions =
-                                    '<option value="" selected disabled>Select Category</option>';
-                                categories.forEach(category => {
-                                    categoryOptions +=
-                                        `<option value="${category.kategori_id}" ${category.kategori_id == barang.kategori_id ? 'selected' : ''}>${category.nama_kategori}</option>`;
-                                });
-                                html += `
-                                    <tr>
-                                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i>
-                                            <strong>${index + 1}</strong>
-                                        </td>
-                                        <td>${barang.barang_id}</td>
-                                        <td>
-                                            ${barang.nama_barang}
-                                        </td>
-                                        <td>
-                                            <select class="form-control select-kategori" data-barang_id="${barang.barang_id}"
-                                                data-selected_department="${barang.kategori_id}">
-                                                ${categoryOptions}
-                                            </select>
-                                        </td>
-                                        <td>
-                                            ${barang.is_free ? '<span class="badge text-bg-success">Free</span>' : '<span class="badge text-bg-warning">Borrowed</span>'}
-                                        </td>
-                                        <td>
-                                            <div class="dropdown">
-                                                <button type="button" class="btn p-0 dropdown-toggle hide-arrow"
-                                                    data-bs-toggle="dropdown">
-                                                    <i class="bx bx-dots-vertical-rounded"></i>
-                                                </button>
-                                                <div class="dropdown-menu">
-                                                    <button type="button" class="dropdown-item edit_btn"
-                                                        value="${barang.barang_id}" data-bs-toggle="modal"
-                                                        data-bs-target="#editModal"><i class="bx bx-edit-alt me-1"></i>
-                                                        Edit
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                `;
-                            });
-                            $('.table tbody').html(html);
+                            window.location.reload();
                         });
                     },
                     error: function(xhr) {

@@ -43,11 +43,11 @@ class BarangController extends Controller
                 'nama_barang' => $request->nama_barang,
                 'is_free' => true
             ]);
-
+            
             $barangs = Barang::all();
             $categories = KategoriBarang::all();
 
-            event(new BarangMasuk($barang, 'Gudang'));
+            event(new BarangMasuk($request->barang_id, 'Gudang'));
 
             $data = [
                 'barangs' => $barangs,
@@ -170,5 +170,14 @@ class BarangController extends Controller
             'errors' => $errors,
             'data' => $data
         ], $code);
+    }
+
+    public function perjalanan(Barang $barang)
+    {
+        $perjalanans = $barang->perjalanan;
+        return view('admin.barangs.perjalanan', [
+            'perjalanans' => $perjalanans,
+            'barang' => $barang
+        ]);
     }
 }

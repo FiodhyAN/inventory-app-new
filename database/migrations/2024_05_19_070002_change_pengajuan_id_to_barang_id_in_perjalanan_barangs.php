@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('perjalanan_barangs', function (Blueprint $table) {
             $table->dropForeign(['pengajuan_id']);
             $table->dropColumn('pengajuan_id');
-            $table->string('barang_id')->after('id');
+            $table->string('barang_id')->after('perjalanan_id');
             $table->foreign('barang_id')->references('barang_id')->on('barangs');
         });
     }

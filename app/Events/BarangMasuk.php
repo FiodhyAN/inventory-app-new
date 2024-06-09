@@ -20,7 +20,7 @@ class BarangMasuk
     /**
      * Create a new event instance.
      */
-    public function __construct(Barang $barang, string $lokasi)
+    public function __construct(string $barang, string $lokasi)
     {
         $this->barang = $barang;
         $this->lokasi = $lokasi;

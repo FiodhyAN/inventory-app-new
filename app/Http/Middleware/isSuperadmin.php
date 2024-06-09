@@ -15,7 +15,7 @@ class isSuperadmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->user()->is_superadmin !== true) {
+        if (auth()->user()->is_superadmin != true) {
             abort(403);
         }
 

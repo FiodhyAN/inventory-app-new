@@ -66,16 +66,16 @@
                             <td>
                                 @switch($pengajuan->status_pengajuan)
                                     @case('s')
-                                        <span class="badge bg-label-primary">Submit</span>
+                                        <span class="badge bg-label-primary">Submitted</span>
                                         @break
                                     @case('y')
-                                        <span class="badge bg-label-success">Accept</span>
+                                        <span class="badge bg-label-success">Accepted</span>
                                         @break
                                     @case('n')
-                                        <span class="badge bg-label-danger">Reject</span>   
+                                        <span class="badge bg-label-danger">Rejected</span>   
                                         @break  
                                     @case('r')
-                                        <span class="badge bg-label-warning">Return</span>
+                                        <span class="badge bg-label-warning">Returned</span>
                                         @break
                                     @break
                                     @default
@@ -84,23 +84,13 @@
                             </td>
                             <td>{{ $pengajuan->created_at }}</td>
                             <td>
-                                @if (auth()->user()->is_admin)
-                                    @switch($pengajuan->status_pengajuan)
-                                        @case('s')
-                                            <button class="btn btn-success accept" type="button">Accept</button>
-                                            <button class="btn btn-danger reject" type="button">Reject</button>
-                                            @break
-                                        @default
-                                    @endswitch
+                                @if (auth()->user()->is_admin && $pengajuan->status_pengajuan == 's')
+                                    <button class="btn btn-success accept" type="button" data-id="{{ $pengajuan->pengajuan_id }}">Accept</button>
+                                    <button class="btn btn-danger reject" type="button" data-id="{{ $pengajuan->pengajuan_id }}">Reject</button>
                                 @endif
                                 
-                                @if ($pengajuan->user_id == auth()->user()->id)
-                                    @switch($pengajuan->status_pengajuan)
-                                        @case('y')
-                                            <button class="btn btn-secondary retur" type="button">Retur Barang</button>
-                                            @break
-                                        @default
-                                    @endswitch
+                                @if ($pengajuan->user_id == auth()->user()->user_id && $pengajuan->status_pengajuan == 'y')
+                                    <button class="btn btn-secondary retur" type="button" data-id="{{ $pengajuan->pengajuan_id }}">Retur Barang</button>
                                 @endif
                             </td>
                         </tr>
@@ -193,6 +183,7 @@
             $('.accept').on('click', function() {
                 const tr = $(this).closest('tr');
                 const barang_id = tr.find('td:eq(1)').text();
+                const pengajuan_id = $(this).data('id');
 
                 Swal.fire({
                     title: 'Are you sure?',
@@ -218,7 +209,7 @@
                             url: "{{ route('admin.pengajuan.accept') }}",
                             type: "PUT",
                             data: {
-                                barang_id: barang_id,
+                                pengajuan_id: pengajuan_id,
                                 _token: "{{ csrf_token() }}"
                             },
                             success: function(response) {
@@ -245,6 +236,7 @@
             $('.reject').on('click', function() {
                 const tr = $(this).closest('tr');
                 const barang_id = tr.find('td:eq(1)').text();
+                const pengajuan_id = $(this).data('id');
 
                 Swal.fire({
                     title: 'Are you sure?',
@@ -270,7 +262,7 @@
                             url: "{{ route('admin.pengajuan.reject') }}",
                             type: "PUT",
                             data: {
-                                barang_id: barang_id,
+                                pengajuan_id: pengajuan_id,
                                 _token: "{{ csrf_token() }}"
                             },
                             success: function(response) {
@@ -297,6 +289,7 @@
             $('.retur').on('click', function() {
                 const tr = $(this).closest('tr');
                 const barang_id = tr.find('td:eq(1)').text();
+                const pengajuan_id = $(this).data('id');
 
                 Swal.fire({
                     title: 'Are you sure?',
@@ -322,7 +315,7 @@
                             url: "{{ route('pengajuan.retur') }}",
                             type: "PUT",
                             data: {
-                                barang_id: barang_id,
+                                pengajuan_id: pengajuan_id,
                                 _token: "{{ csrf_token() }}"
                             },
                             success: function(response) {

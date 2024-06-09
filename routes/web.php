@@ -21,10 +21,10 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/pengajuan', [PengajuanController::class, 'index'])->name('pengajuan');
+    Route::get('/pengajuan', [PengajuanController::class, 'index'])->name('pengajuan')->middleware('userHasDept');
     Route::post('/pengajuan', [PengajuanController::class, 'store'])->name('pengajuan.store');
     
-    Route::put('/pengajuan/return', [PengajuanController::class, 'return'])->name('pengajuan.retur');
+    Route::put('/pengajuan/retur', [PengajuanController::class, 'return'])->name('pengajuan.retur');
     
     Route::get('/about', function () {
         return view('about');
@@ -70,6 +70,7 @@ Route::group(['middleware' => ['auth', 'isAdmin'], 'prefix' => 'admin-menu'], fu
         Route::put('/accept', [PengajuanController::class, 'accept'])->name('admin.pengajuan.accept');
         Route::put('/reject', [PengajuanController::class, 'reject'])->name('admin.pengajuan.reject');
     });
+    Route::get('/perjalanan/{barang}', [BarangController::class, 'perjalanan'])->name('admin.barang.perjalanan');
 });
 
 require __DIR__ . '/auth.php';
